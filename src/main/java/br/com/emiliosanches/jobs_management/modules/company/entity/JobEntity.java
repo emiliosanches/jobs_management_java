@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Entity(name = "jobs")
@@ -23,9 +24,11 @@ public class JobEntity {
 
   private String description;
   private String benefits;
+
+  @NotBlank(message = "Field [level] is required")
   private String level;
 
-  @Column(name = "company_id")
+  @Column(name = "company_id", nullable = false)
   private UUID companyId;
 
   @CreationTimestamp
