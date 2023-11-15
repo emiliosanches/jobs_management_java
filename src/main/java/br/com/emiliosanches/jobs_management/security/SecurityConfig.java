@@ -25,6 +25,7 @@ public class SecurityConfig {
       auth.requestMatchers("/candidates/", "/candidates").permitAll()
         .requestMatchers("/companies/", "/companies").permitAll()
         .requestMatchers("/companies/auth/", "/companies/auth").permitAll()
+        .requestMatchers("/candidates/auth/", "/candidates/auth").permitAll()
         .requestMatchers(SWAGGER_ROUTES).permitAll()
         .anyRequest().authenticated();
     }).addFilterBefore(securityFilter, BasicAuthenticationFilter.class);

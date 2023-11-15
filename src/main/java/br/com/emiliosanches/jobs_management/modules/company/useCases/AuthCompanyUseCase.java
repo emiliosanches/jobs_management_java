@@ -20,7 +20,7 @@ import br.com.emiliosanches.jobs_management.modules.company.repositories.Company
 
 @Service
 public class AuthCompanyUseCase {
-  @Value("${security.token.secret}")
+  @Value("${security.token.secret.company}")
   private String secretKey;
 
   @Autowired
