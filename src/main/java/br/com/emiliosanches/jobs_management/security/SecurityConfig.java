@@ -13,12 +13,19 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 public class SecurityConfig {
   @Autowired SecurityFilter securityFilter;
 
+  private static final String[] SWAGGER_ROUTES = {
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/swagger/resources/**"
+  };
+
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> {
       auth.requestMatchers("/candidates/", "/candidates").permitAll()
         .requestMatchers("/companies/", "/companies").permitAll()
         .requestMatchers("/companies/auth/", "/companies/auth").permitAll()
+        .requestMatchers(SWAGGER_ROUTES).permitAll()
         .anyRequest().authenticated();
     }).addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
 
