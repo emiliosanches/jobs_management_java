@@ -17,7 +17,7 @@ public class AuthCompanyController {
   @Autowired
   AuthCompanyUseCase authCompanyUseCase;
 
-  @PostMapping({ "/", "" })
+  @PostMapping
   public ResponseEntity<Object> create(@RequestBody AuthCompanyDTO authCompanyDTO) {
     try {
       return ResponseEntity.ok().body(this.authCompanyUseCase.execute(authCompanyDTO));

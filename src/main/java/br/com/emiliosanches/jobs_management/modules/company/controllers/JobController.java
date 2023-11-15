@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 public class JobController {
   @Autowired private CreateJobUseCase createJobUseCase;
 
-  @PostMapping({ "/", "" })
+  @PostMapping
   public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
     var companyId = request.getAttribute("companyId");
 
