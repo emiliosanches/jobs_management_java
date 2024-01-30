@@ -4,6 +4,7 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,9 +38,10 @@ public class CandidateController {
   }
 
   @GetMapping
+  @PreAuthorize("hasRole('CANDIDATE')")
   public ResponseEntity<Object> getProfile(HttpServletRequest request) {
     try {
-      var candidateId = request.getAttribute("candidate_id");
+      var candidateId = request.getAttribute("candidateId");
 
       var profile = this.getCandidateProfileUseCase.execute(UUID.fromString(candidateId.toString()));
 
