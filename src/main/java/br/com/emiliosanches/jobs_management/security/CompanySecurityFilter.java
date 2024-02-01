@@ -1,10 +1,10 @@
 package br.com.emiliosanches.jobs_management.security;
 
 import java.io.IOException;
-import java.util.Collections;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,7 +23,10 @@ public class CompanySecurityFilter extends OncePerRequestFilter {
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
-    if (!request.getRequestURI().startsWith("/companies")) {
+    if (
+      !request.getRequestURI().startsWith("/companies") &&
+      !request.getRequestURI().startsWith("/jobs")
+    ) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -37,17 +40,22 @@ public class CompanySecurityFilter extends OncePerRequestFilter {
       return;
     }
 
-    var tokenSubject = this.jwtProvider.validateToken(header);
+    var token = this.jwtProvider.validateToken(header);
 
-    if (tokenSubject == null) {
+    if (token == null) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       return;
     }
 
-    request.setAttribute("companyId", tokenSubject);
+    request.setAttribute("companyId", token.getSubject());
 
-    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(tokenSubject, null,
-        Collections.emptyList());
+    var roles = token.getClaim("roles").asList(String.class);
+
+    var grants = roles.stream().map(
+        role -> new SimpleGrantedAuthority("ROLE_" + role)).toList();
+
+    UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(token.getSubject(), null,
+        grants);
 
     SecurityContextHolder.getContext().setAuthentication(auth);
 

@@ -2,6 +2,7 @@ package br.com.emiliosanches.jobs_management.modules.company.useCases;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
 
 import javax.naming.AuthenticationException;
 
@@ -15,6 +16,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import br.com.emiliosanches.jobs_management.modules.company.dto.AuthCompanyDTO;
+import br.com.emiliosanches.jobs_management.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.emiliosanches.jobs_management.modules.company.entity.CompanyEntity;
 import br.com.emiliosanches.jobs_management.modules.company.repositories.CompanyRepository;
 
@@ -29,7 +31,7 @@ public class AuthCompanyUseCase {
   @Autowired
   private PasswordEncoder passwordEncoder;
 
-  public String execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
+  public AuthCompanyResponseDTO execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
     CompanyEntity company = this.companyRepository.findByEmail(authCompanyDTO.getEmail())
         .orElseThrow(() -> new UsernameNotFoundException("Company not found"));
 
@@ -40,10 +42,15 @@ public class AuthCompanyUseCase {
 
     Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-    return JWT.create()
+    var expires_at = Instant.now().plus(Duration.ofHours(2));
+
+    var token = JWT.create()
         .withIssuer("MAIN_SERVICE")
         .withSubject(company.getId().toString())
-        .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+        .withExpiresAt(expires_at)
+        .withClaim("roles", Arrays.asList("COMPANY"))
         .sign(algorithm);
+
+    return AuthCompanyResponseDTO.builder().access_token(token).expires_at(expires_at.toEpochMilli()).build();
   }
 }
