@@ -10,9 +10,10 @@ import br.com.emiliosanches.jobs_management.modules.company.repositories.JobRepo
 
 @Service
 public class ListJobsByFilterUseCase {
-  @Autowired JobRepository jobRepository;
+  @Autowired
+  JobRepository jobRepository;
 
   public List<JobEntity> execute(String query) {
-    return this.jobRepository.findByDescriptionContains(query);
+    return this.jobRepository.findByDescriptionContainsIgnoreCase(query);
   }
 }
