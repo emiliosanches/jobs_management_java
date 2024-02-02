@@ -26,6 +26,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -74,7 +75,7 @@ public class CandidateController {
           @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
       })
   })
-
+  @SecurityRequirement(name = "jwt_auth")
   public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String query) {
     return this.listJobsByFilterUseCase.execute(query);
   }
