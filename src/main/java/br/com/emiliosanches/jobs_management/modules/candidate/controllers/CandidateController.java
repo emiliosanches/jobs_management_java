@@ -20,6 +20,12 @@ import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateCan
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.GetCandidateProfileUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.ListJobsByFilterUseCase;
 import br.com.emiliosanches.jobs_management.modules.company.entity.JobEntity;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -61,6 +67,14 @@ public class CandidateController {
 
   @GetMapping("/jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
+  @Tag(name = "Candidato", description = "Informações do candidato")
+  @Operation(summary = "Lista de vagas disponíveis para o candidato", description = "Essa função é responsável por listar todas as vagas disponíveis baseada no filtro")
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = {
+          @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
+      })
+  })
+
   public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String query) {
     return this.listJobsByFilterUseCase.execute(query);
   }
