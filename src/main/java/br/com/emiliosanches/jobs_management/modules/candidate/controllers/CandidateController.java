@@ -1,5 +1,6 @@
 package br.com.emiliosanches.jobs_management.modules.candidate.controllers;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.emiliosanches.jobs_management.exceptions.UserAlreadyExistsException;
 import br.com.emiliosanches.jobs_management.modules.candidate.CandidateEntity;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateCandidateUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.GetCandidateProfileUseCase;
+import br.com.emiliosanches.jobs_management.modules.candidate.useCases.ListJobsByFilterUseCase;
+import br.com.emiliosanches.jobs_management.modules.company.entity.JobEntity;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
@@ -28,6 +33,9 @@ public class CandidateController {
   @Autowired
   private GetCandidateProfileUseCase getCandidateProfileUseCase;
 
+  @Autowired
+  private ListJobsByFilterUseCase listJobsByFilterUseCase;
+
   @PostMapping
   public ResponseEntity<Object> create(@Valid @RequestBody CandidateEntity candidateEntity) {
     try {
@@ -38,7 +46,7 @@ public class CandidateController {
   }
 
   @GetMapping
-  @PreAuthorize("hasRole('CANDIDATE')")
+  // @PreAuthorize("hasRole('CANDIDATE')")
   public ResponseEntity<Object> getProfile(HttpServletRequest request) {
     try {
       var candidateId = request.getAttribute("candidateId");
@@ -49,5 +57,11 @@ public class CandidateController {
     } catch (UsernameNotFoundException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
+  }
+
+  @GetMapping("/jobs")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String query) {
+    return this.listJobsByFilterUseCase.execute(query);
   }
 }

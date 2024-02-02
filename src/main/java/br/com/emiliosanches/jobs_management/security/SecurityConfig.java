@@ -28,10 +28,11 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> {
-      auth.requestMatchers("/candidates/", "/candidates").permitAll()
-          .requestMatchers("/companies/", "/companies").permitAll()
-          .requestMatchers("/companies/auth/", "/companies/auth").permitAll()
-          .requestMatchers("/candidates/auth/", "/candidates/auth").permitAll()
+      auth.requestMatchers("/candidates").permitAll()
+          .requestMatchers("/candidates/jobs").permitAll()
+          .requestMatchers("/companies").permitAll()
+          .requestMatchers("/companies/auth").permitAll()
+          .requestMatchers("/candidates/auth").permitAll()
           .requestMatchers(SWAGGER_ROUTES).permitAll()
           .anyRequest().authenticated();
     })
