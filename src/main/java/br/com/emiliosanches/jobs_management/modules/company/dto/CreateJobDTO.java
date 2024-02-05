@@ -6,12 +6,12 @@ import lombok.Data;
 
 @Data
 public class CreateJobDTO {
-  @Schema(example = "Vaga para Desenvolvedor JavaScript", requiredMode = RequiredMode.REQUIRED)
+  @Schema(example = "React/NextJS developer", requiredMode = RequiredMode.REQUIRED)
   private String description;
 
-  @Schema(example = "GymPass, plano odontológico, vale transporte", requiredMode = RequiredMode.REQUIRED)
+  @Schema(example = "GymPass, health insurance, paid parental leave", requiredMode = RequiredMode.REQUIRED)
   private String benefits;
 
-  @Schema(example = "Jr", requiredMode = RequiredMode.REQUIRED)
+  @Schema(example = "Mid level", requiredMode = RequiredMode.REQUIRED)
   private String level;
 }

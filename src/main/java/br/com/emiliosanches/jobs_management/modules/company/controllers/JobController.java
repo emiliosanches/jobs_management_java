@@ -31,8 +31,8 @@ public class JobController {
 
   @PostMapping
   @PreAuthorize("hasRole('COMPANY')")
-  @Tag(name = "Vagas", description = "Informações das vagas")
-  @Operation(summary = "Cadastro de vaga", description = "Essa função é responsável por cadastrar uma vaga dentro da empresa")
+  @Tag(name = "Jobs", description = "Jobs information")
+  @Operation(summary = "Job creation", description = "This function responsible for creating a job related to the authenticated company")
   @ApiResponses({
       @ApiResponse(responseCode = "200", content = {
           @Content(schema = @Schema(implementation = JobEntity.class))

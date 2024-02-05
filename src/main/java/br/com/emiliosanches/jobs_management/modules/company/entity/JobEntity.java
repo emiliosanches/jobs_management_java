@@ -29,14 +29,14 @@ public class JobEntity {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
-  @Schema(example = "Vaga para Desenvolvedor JavaScript")
+  @Schema(example = "React/NextJS developer")
   private String description;
-  
-  @Schema(example = "GymPass, plano odontológico, vale transporte")
+
+  @Schema(example = "GymPass, health insurance, paid parental leave")
   private String benefits;
 
   @NotBlank(message = "Field [level] is required")
-  @Schema(example = "Jr")
+  @Schema(example = "Mid level")
   private String level;
 
   @Column(name = "company_id", nullable = false)

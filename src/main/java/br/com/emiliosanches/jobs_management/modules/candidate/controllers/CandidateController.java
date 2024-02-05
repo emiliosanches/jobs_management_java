@@ -55,8 +55,8 @@ public class CandidateController {
 
   @GetMapping
   @PreAuthorize("hasRole('CANDIDATE')")
-  @Tag(name = "Candidato", description = "Informações do candidato")
-  @Operation(summary = "Perfil do candidato", description = "Essa função é responsável por exibir as informações do perfil do candidato")
+  @Tag(name = "Candidate", description = "Candidate information")
+  @Operation(summary = "Candidate profile", description = "This function is responsible for showing candidate profile information")
   @ApiResponses({ @ApiResponse(responseCode = "200", content = {
       @Content(schema = @Schema(implementation = CandidateProfileDTO.class))
   }) })
@@ -75,15 +75,15 @@ public class CandidateController {
 
   @GetMapping("/jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
-  @Tag(name = "Candidato", description = "Informações do candidato")
-  @Operation(summary = "Lista de vagas disponíveis para o candidato", description = "Essa função é responsável por listar todas as vagas disponíveis baseada no filtro")
+  @Tag(name = "Candidate", description = "Candidate information")
+  @Operation(summary = "Jobs listing for the candidate", description = "This function is responsible for listing all the jobs based on the filter")
   @ApiResponses({
       @ApiResponse(responseCode = "200", content = {
           @Content(array = @ArraySchema(schema = @Schema(implementation = JobEntity.class)))
       })
   })
   @SecurityRequirement(name = "jwt_auth")
-  public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String query) {
-    return this.listJobsByFilterUseCase.execute(query);
+  public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String filter) {
+    return this.listJobsByFilterUseCase.execute(filter);
   }
 }
