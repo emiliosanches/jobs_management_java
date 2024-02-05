@@ -57,9 +57,12 @@ public class CandidateController {
   @PreAuthorize("hasRole('CANDIDATE')")
   @Tag(name = "Candidate", description = "Candidate information")
   @Operation(summary = "Candidate profile", description = "This function is responsible for showing candidate profile information")
-  @ApiResponses({ @ApiResponse(responseCode = "200", content = {
-      @Content(schema = @Schema(implementation = CandidateProfileDTO.class))
-  }) })
+  @ApiResponses({
+      @ApiResponse(responseCode = "200", content = {
+          @Content(schema = @Schema(implementation = CandidateProfileDTO.class))
+      }),
+      @ApiResponse(responseCode = "400", description = "User not found")
+  })
   @SecurityRequirement(name = "jwt_auth")
   public ResponseEntity<Object> getProfile(HttpServletRequest request) {
     try {
