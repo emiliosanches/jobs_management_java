@@ -34,7 +34,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/candidates")
-@Tag(name = "Candidate", description = "Candidate information")
+@Tag(name = "Candidates", description = "Candidates information")
 public class CandidateController {
   @Autowired
   private CreateCandidateUseCase createCandidateUseCase;

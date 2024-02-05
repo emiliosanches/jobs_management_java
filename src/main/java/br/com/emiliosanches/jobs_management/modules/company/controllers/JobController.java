@@ -24,13 +24,13 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/jobs")
+@Tag(name = "Jobs", description = "Jobs information")
 public class JobController {
   @Autowired
   private CreateJobUseCase createJobUseCase;
 
   @PostMapping
   @PreAuthorize("hasRole('COMPANY')")
-  @Tag(name = "Jobs", description = "Jobs information")
   @Operation(summary = "Job creation", description = "This function responsible for creating a job related to the authenticated company")
   @ApiResponses({
       @ApiResponse(responseCode = "200", content = {
