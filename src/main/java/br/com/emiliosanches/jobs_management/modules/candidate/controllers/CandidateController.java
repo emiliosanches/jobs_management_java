@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import br.com.emiliosanches.jobs_management.exceptions.UserAlreadyExistsException;
 import br.com.emiliosanches.jobs_management.modules.candidate.CandidateEntity;
+import br.com.emiliosanches.jobs_management.modules.candidate.dto.CandidateProfileDTO;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateCandidateUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.GetCandidateProfileUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.ListJobsByFilterUseCase;
@@ -53,7 +54,13 @@ public class CandidateController {
   }
 
   @GetMapping
-  // @PreAuthorize("hasRole('CANDIDATE')")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  @Tag(name = "Candidato", description = "Informações do candidato")
+  @Operation(summary = "Perfil do candidato", description = "Essa função é responsável por exibir as informações do perfil do candidato")
+  @ApiResponses({ @ApiResponse(responseCode = "200", content = {
+      @Content(schema = @Schema(implementation = CandidateProfileDTO.class))
+  }) })
+  @SecurityRequirement(name = "jwt_auth")
   public ResponseEntity<Object> getProfile(HttpServletRequest request) {
     try {
       var candidateId = request.getAttribute("candidateId");
