@@ -18,6 +18,7 @@ import br.com.emiliosanches.jobs_management.exceptions.UserAlreadyExistsExceptio
 import br.com.emiliosanches.jobs_management.modules.candidate.CandidateEntity;
 import br.com.emiliosanches.jobs_management.modules.candidate.dto.CandidateProfileDTO;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateCandidateUseCase;
+import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateJobApplicationUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.GetCandidateProfileUseCase;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.ListJobsByFilterUseCase;
 import br.com.emiliosanches.jobs_management.modules.company.entity.JobEntity;
@@ -33,7 +34,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/candidates")
+@RequestMapping("candidates")
 @Tag(name = "Candidates", description = "Candidates information")
 public class CandidateController {
   @Autowired
@@ -44,6 +45,9 @@ public class CandidateController {
 
   @Autowired
   private ListJobsByFilterUseCase listJobsByFilterUseCase;
+
+  @Autowired
+  private CreateJobApplicationUseCase createJobApplicationUseCase;
 
   @PostMapping
   @Operation(summary = "Candidate registration", description = "This function is responsible for registering a candidate")
@@ -83,7 +87,7 @@ public class CandidateController {
     }
   }
 
-  @GetMapping("/jobs")
+  @GetMapping("jobs")
   @PreAuthorize("hasRole('CANDIDATE')")
   @Operation(summary = "Jobs listing for the candidate", description = "This function is responsible for listing all the jobs based on the filter")
   @ApiResponses({
@@ -94,5 +98,20 @@ public class CandidateController {
   @SecurityRequirement(name = "jwt_auth")
   public List<JobEntity> listByFilter(@RequestParam(required = false, defaultValue = "") String filter) {
     return this.listJobsByFilterUseCase.execute(filter);
+  }
+
+  @PostMapping("application")
+  @PreAuthorize("hasRole('CANDIDATE')")
+  @Operation(summary = "Create an application from a candidate to a job", description = "This function is responsible for applying a candidate to a job")
+  @SecurityRequirement(name = "jwt_auth")
+  public ResponseEntity<Object> applyJob(HttpServletRequest request, @RequestBody UUID jobId) {
+    var candidateId = request.getAttribute("candidateId");
+
+    try {
+      var result = this.createJobApplicationUseCase.execute(UUID.fromString(candidateId.toString()), jobId);
+      return ResponseEntity.ok().body(result);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
   }
 }
