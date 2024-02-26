@@ -35,7 +35,6 @@ public class AuthCompanyController {
     try {
       return ResponseEntity.ok().body(this.authCompanyUseCase.execute(authCompanyDTO));
     } catch (Exception e) {
-      System.out.println(e.getMessage());
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
   }

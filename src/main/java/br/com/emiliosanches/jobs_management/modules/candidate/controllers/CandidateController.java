@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import br.com.emiliosanches.jobs_management.exceptions.UserAlreadyExistsException;
+import br.com.emiliosanches.jobs_management.exceptions.UserNotFoundException;
 import br.com.emiliosanches.jobs_management.modules.candidate.CandidateEntity;
 import br.com.emiliosanches.jobs_management.modules.candidate.dto.CandidateProfileDTO;
 import br.com.emiliosanches.jobs_management.modules.candidate.useCases.CreateCandidateUseCase;
@@ -82,7 +82,7 @@ public class CandidateController {
       var profile = this.getCandidateProfileUseCase.execute(UUID.fromString(candidateId.toString()));
 
       return ResponseEntity.ok().body(profile);
-    } catch (UsernameNotFoundException e) {
+    } catch (UserNotFoundException e) {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
   }

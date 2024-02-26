@@ -8,13 +8,13 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import br.com.emiliosanches.jobs_management.exceptions.UserNotFoundException;
 import br.com.emiliosanches.jobs_management.modules.candidate.CandidateRepository;
 import br.com.emiliosanches.jobs_management.modules.candidate.dto.AuthCandidateDTO;
 import br.com.emiliosanches.jobs_management.modules.candidate.dto.AuthCandidateResponseDTO;
@@ -31,9 +31,8 @@ public class AuthCandidateUseCase {
   private String secretKey;
 
   public AuthCandidateResponseDTO execute(AuthCandidateDTO authCandidateDTO) throws AuthenticationException {
-    System.out.println(authCandidateDTO);
     var candidate = this.candidateRepository.findByUsername(authCandidateDTO.username())
-        .orElseThrow(() -> new UsernameNotFoundException("Candidate not found"));
+        .orElseThrow(() -> new UserNotFoundException());
 
     boolean passwordMatches = this.passwordEncoder.matches(authCandidateDTO.password(), candidate.getPassword());
 

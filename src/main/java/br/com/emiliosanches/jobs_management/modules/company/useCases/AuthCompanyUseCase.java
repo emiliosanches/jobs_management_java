@@ -8,13 +8,13 @@ import javax.naming.AuthenticationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
+import br.com.emiliosanches.jobs_management.exceptions.CompanyNotFoundException;
 import br.com.emiliosanches.jobs_management.modules.company.dto.AuthCompanyDTO;
 import br.com.emiliosanches.jobs_management.modules.company.dto.AuthCompanyResponseDTO;
 import br.com.emiliosanches.jobs_management.modules.company.entity.CompanyEntity;
@@ -33,7 +33,7 @@ public class AuthCompanyUseCase {
 
   public AuthCompanyResponseDTO execute(AuthCompanyDTO authCompanyDTO) throws AuthenticationException {
     CompanyEntity company = this.companyRepository.findByEmail(authCompanyDTO.getEmail())
-        .orElseThrow(() -> new UsernameNotFoundException("Company not found"));
+        .orElseThrow(() -> new CompanyNotFoundException());
 
     boolean passwordMatches = this.passwordEncoder.matches(authCompanyDTO.getPassword(), company.getPassword());
 
