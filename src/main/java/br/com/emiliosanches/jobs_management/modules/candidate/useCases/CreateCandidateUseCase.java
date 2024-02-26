@@ -14,7 +14,7 @@ public class CreateCandidateUseCase {
   private CandidateRepository candidateRepository;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   public CandidateEntity execute(CandidateEntity candidateEntity) {
     this.candidateRepository
