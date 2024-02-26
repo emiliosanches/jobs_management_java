@@ -22,10 +22,10 @@ import br.com.emiliosanches.jobs_management.modules.candidate.dto.AuthCandidateR
 @Service
 public class AuthCandidateUseCase {
   @Autowired
-  CandidateRepository candidateRepository;
+  private CandidateRepository candidateRepository;
 
   @Autowired
-  PasswordEncoder passwordEncoder;
+  private PasswordEncoder passwordEncoder;
 
   @Value("${security.token.secret.candidate}")
   private String secretKey;
