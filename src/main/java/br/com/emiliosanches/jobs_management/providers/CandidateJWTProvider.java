@@ -21,7 +21,6 @@ public class CandidateJWTProvider {
     try {
       return JWT.require(algorithm).build().verify(token);
     } catch (JWTVerificationException e) {
-      e.printStackTrace();
       return null;
     }
   }
