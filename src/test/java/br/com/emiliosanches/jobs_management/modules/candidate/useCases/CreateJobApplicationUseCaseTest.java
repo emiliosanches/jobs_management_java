@@ -9,11 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import java.util.UUID;
-
-import org.assertj.core.api.Assertions;
 
 import br.com.emiliosanches.jobs_management.exceptions.JobNotFoundException;
 import br.com.emiliosanches.jobs_management.exceptions.UserNotFoundException;
@@ -44,7 +43,7 @@ class CreateJobApplicationUseCaseTest {
 		try {
 			this.applyCandidateToJobUseCase.execute(null, null);
 		} catch (Exception e) {
-			Assertions.assertThat(e).isInstanceOf(UserNotFoundException.class);
+			assertThat(e).isInstanceOf(UserNotFoundException.class);
 		}
 	}
 
@@ -59,7 +58,7 @@ class CreateJobApplicationUseCaseTest {
 		try {
 			this.applyCandidateToJobUseCase.execute(candidateId, null);
 		} catch (Exception e) {
-			Assertions.assertThat(e).isInstanceOf(JobNotFoundException.class);
+			assertThat(e).isInstanceOf(JobNotFoundException.class);
 		}
 	}
 
@@ -78,7 +77,7 @@ class CreateJobApplicationUseCaseTest {
 
 		var result = applyCandidateToJobUseCase.execute(candidateId, jobId);
 
-		Assertions.assertThat(result).hasFieldOrProperty("id");
+		assertThat(result).hasFieldOrProperty("id");
 		assertNotNull(result.getId());
 	}
 }

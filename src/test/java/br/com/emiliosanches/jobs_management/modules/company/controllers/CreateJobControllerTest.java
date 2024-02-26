@@ -1,5 +1,7 @@
 package br.com.emiliosanches.jobs_management.modules.company.controllers;
 
+import java.util.UUID;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,37 +27,51 @@ import br.com.emiliosanches.jobs_management.utils.TestUtils;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 public class CreateJobControllerTest {
-  private MockMvc mvc;
+    private MockMvc mvc;
 
-  @Autowired
-  private WebApplicationContext context;
+    @Autowired
+    private WebApplicationContext context;
 
-  @Autowired
-  private CompanyRepository companyRepository;
+    @Autowired
+    private CompanyRepository companyRepository;
 
-  @Before
-  public void setup() {
-    mvc = MockMvcBuilders
-        .webAppContextSetup(context)
-        .apply(SecurityMockMvcConfigurers.springSecurity())
-        .build();
-  }
+    @Before
+    public void setup() {
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
+    }
 
-  @Test
-  public void shouldBeAbleToCreateAJob() throws Exception {
-    var company = CompanyEntity.builder().description("company description").email("email@company.com")
-        .password("1234567890").name("Company Name").build();
+    @Test
+    public void shouldBeAbleToCreateAJob() throws Exception {
+        var company = CompanyEntity.builder().description("company description").email("email@company.com")
+                .password("1234567890").name("Company Name").build();
 
-    company = companyRepository.saveAndFlush(company);
+        company = companyRepository.saveAndFlush(company);
 
-    CreateJobDTO dto = CreateJobDTO.builder().benefits("Benefits test").description("Description").level("Jr").build();
+        CreateJobDTO dto = CreateJobDTO.builder().benefits("Benefits test").description("Description").level("Jr")
+                .build();
 
-    mvc
-        .perform(
-            MockMvcRequestBuilders.post("/jobs").contentType(MediaType.APPLICATION_JSON)
+        mvc
+                .perform(
+                        MockMvcRequestBuilders.post("/jobs").contentType(MediaType.APPLICATION_JSON)
+                                .content(TestUtils.objectToJson(dto))
+                                .header("Authorization", "Bearer " + TestUtils.generateToken(company.getId(),
+                                        "dummySecret")))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    public void shouldNotBeAbleToCreateAJobIfCompanyNotFound() throws Exception {
+        CreateJobDTO dto = CreateJobDTO.builder().benefits("Benefits test").description("Description").level("Jr")
+                .build();
+
+        mvc.perform(MockMvcRequestBuilders.post("/jobs").contentType(MediaType.APPLICATION_JSON)
                 .content(TestUtils.objectToJson(dto))
-                .header("Authorization", "Bearer " + TestUtils.generateToken(company.getId(),
-                    "dummySecret")))
-        .andExpect(MockMvcResultMatchers.status().isOk());
-  }
+                .header("Authorization", "Bearer " + TestUtils.generateToken(UUID.randomUUID(), "dummySecret")))
+                .andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        System.out.println("not catched");
+    }
 }
